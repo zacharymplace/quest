@@ -5,6 +5,9 @@ import {
 export function createSeedQuests() {
   return [
     createQuest({
+      id:
+        "cook-foundation",
+
       title: "Make fresh pasta",
       description:
         "Make fresh pasta from scratch and document the finished dish.",
@@ -17,6 +20,9 @@ export function createSeedQuests() {
     }),
 
     createQuest({
+      id:
+        "music-foundation",
+
       title: "Write 60 seconds of music",
       description:
         "Create and record at least sixty seconds of original music.",
@@ -29,6 +35,9 @@ export function createSeedQuests() {
     }),
 
     createQuest({
+      id:
+        "explorer-foundation",
+
       title: "Explore somewhere new",
       description:
         "Visit a place you have never intentionally explored before.",

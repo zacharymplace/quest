@@ -24,6 +24,7 @@ export const QuestSchema = z.object({
 });
 
 export function createQuest({
+  id,
   title,
   description,
   category,
@@ -32,7 +33,8 @@ export function createQuest({
   createdBy
 }) {
   return QuestSchema.parse({
-    id: `quest_${nanoid(12)}`,
+    id:
+      id ?? `quest_${nanoid(12)}`,
     title,
     description,
     category,
