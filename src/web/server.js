@@ -13,6 +13,10 @@ import {
 } from "./journey-dashboard-view.js";
 
 import {
+  getJourneyHistoryView
+} from "./journey-history-view.js";
+
+import {
   resolve
 } from "node:path";
 
@@ -35,6 +39,10 @@ import {
 import {
   getActiveJourney
 } from "../services/get-active-journey.js";
+
+import {
+  getJourneyHistory
+} from "../services/get-journey-history.js";
 
 const app =
   express();
@@ -431,6 +439,17 @@ app.get(
           })
         : null;
 
+    const journeyHistory =
+      user
+        ? getJourneyHistoryView({
+            history:
+              getJourneyHistory({
+                attempts:
+                  state.attempts ?? []
+              })
+          })
+        : null;
+
     const quests =
       runtime.listQuests();
 
@@ -512,6 +531,44 @@ app.get(
     Quest is a network built around
     action instead of passive feeds.
   </p>
+
+  ${
+    journeyHistory &&
+    journeyHistory.completed.length > 0
+      ? `
+<section class="panel">
+  <p class="eyebrow">
+    Your journey
+  </p>
+
+  <h2>
+    Completed milestones
+  </h2>
+
+  ${
+    journeyHistory.completed
+      .map(
+        (quest) => `
+<p>
+  ✓ ${escapeHtml(
+    quest.title
+  )}
+</p>
+`
+      )
+      .join("")
+  }
+
+  <p>
+    Total completed:
+    ${escapeHtml(
+      journeyHistory.totalCompleted
+    )}
+  </p>
+</section>
+`
+      : ""
+  }
 
   ${
     journeyDashboard
