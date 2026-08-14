@@ -10,6 +10,14 @@ import {
   recommendNextQuests
 } from "./recommend-next-quests.js";
 
+import {
+  getChainRecommendations
+} from "./get-chain-recommendations.js";
+
+import {
+  questTemplates
+} from "../data/quest-templates.js";
+
 export function getHomeFeed({
   user,
   profile,
@@ -42,12 +50,21 @@ export function getHomeFeed({
       attempts
     });
 
-  const recommended =
-    recommendNextQuests({
-      availableQuests:
-        available,
-      profile
+  const chainRecommendations =
+    getChainRecommendations({
+      attempts,
+      templates:
+        questTemplates
     });
+
+  const recommended =
+    chainRecommendations.length > 0
+      ? chainRecommendations
+      : recommendNextQuests({
+          availableQuests:
+            available,
+          profile
+        });
 
   return {
     greeting:
