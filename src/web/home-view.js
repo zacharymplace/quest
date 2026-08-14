@@ -45,6 +45,26 @@ export function getHomeView({
           }
         : null,
 
+    nextQuest:
+      feed.nextQuest
+        ? {
+            title:
+              feed.nextQuest.quest.title,
+
+            category:
+              feed.nextQuest.quest.category,
+
+            source:
+              feed.nextQuest.source,
+
+            reason:
+              feed.nextQuest.reason,
+
+            progression:
+              feed.nextQuest.progression
+          }
+        : null,
+
     availableCount:
       feed.availableCount
   };
