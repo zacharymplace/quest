@@ -23,6 +23,10 @@ import {
 } from "./generate-quest-proposal.js";
 
 import {
+  buildQuestCatalog
+} from "./build-quest-catalog.js";
+
+import {
   questTemplates
 } from "../data/quest-templates.js";
 
@@ -52,9 +56,16 @@ export function getHomeFeed({
       achievements
     });
 
+  const catalog =
+    buildQuestCatalog({
+      seedQuests:
+        quests
+    });
+
   const available =
     getAvailableQuests({
-      quests,
+      quests:
+        catalog,
       attempts
     });
 

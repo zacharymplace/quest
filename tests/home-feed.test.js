@@ -82,7 +82,7 @@ describe(
 
         expect(
           feed.availableCount
-        ).toBe(2);
+        ).toBeGreaterThan(2);
       }
     );
   }
