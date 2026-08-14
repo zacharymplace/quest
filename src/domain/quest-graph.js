@@ -16,6 +16,28 @@ export const QuestNodeSchema =
     difficulty:
       z.number(),
 
+    skillsBuilt:
+      z.array(
+        z.string()
+      ),
+
+    estimatedMinutes:
+      z.number()
+        .positive(),
+
+    difficultyDelta:
+      z.number(),
+
+    prerequisites:
+      z.array(
+        z.string()
+      ),
+
+    alternatives:
+      z.array(
+        z.string()
+      ),
+
     next:
       z.array(
         z.string()

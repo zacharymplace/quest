@@ -12,6 +12,21 @@ export const questGraph = [
     difficulty:
       6,
 
+    skillsBuilt: [
+      "composition",
+      "creative practice"
+    ],
+
+    estimatedMinutes:
+      60,
+
+    difficultyDelta:
+      0,
+
+    prerequisites: [],
+
+    alternatives: [],
+
     next: [
       "music-second-idea"
     ]
@@ -29,6 +44,23 @@ export const questGraph = [
 
     difficulty:
       7,
+
+    skillsBuilt: [
+      "composition",
+      "development"
+    ],
+
+    estimatedMinutes:
+      60,
+
+    difficultyDelta:
+      1,
+
+    prerequisites: [
+      "music-foundation"
+    ],
+
+    alternatives: [],
 
     next: [
       "music-basic-demo"
@@ -48,6 +80,23 @@ export const questGraph = [
     difficulty:
       8,
 
+    skillsBuilt: [
+      "recording",
+      "arrangement"
+    ],
+
+    estimatedMinutes:
+      120,
+
+    difficultyDelta:
+      1,
+
+    prerequisites: [
+      "music-second-idea"
+    ],
+
+    alternatives: [],
+
     next: [
       "music-release"
     ]
@@ -66,6 +115,23 @@ export const questGraph = [
     difficulty:
       9,
 
+    skillsBuilt: [
+      "publishing",
+      "completion"
+    ],
+
+    estimatedMinutes:
+      240,
+
+    difficultyDelta:
+      1,
+
+    prerequisites: [
+      "music-basic-demo"
+    ],
+
+    alternatives: [],
+
     next: []
   },
 
@@ -81,6 +147,21 @@ export const questGraph = [
 
     difficulty:
       5,
+
+    skillsBuilt: [
+      "technique",
+      "ingredient handling"
+    ],
+
+    estimatedMinutes:
+      90,
+
+    difficultyDelta:
+      0,
+
+    prerequisites: [],
+
+    alternatives: [],
 
     next: [
       "cook-sauce"
@@ -99,6 +180,22 @@ export const questGraph = [
 
     difficulty:
       6,
+
+    skillsBuilt: [
+      "flavor design"
+    ],
+
+    estimatedMinutes:
+      60,
+
+    difficultyDelta:
+      1,
+
+    prerequisites: [
+      "cook-foundation"
+    ],
+
+    alternatives: [],
 
     next: []
   }
