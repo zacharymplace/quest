@@ -34,9 +34,23 @@ import {
   completeQuestCeremony
 } from "./complete-quest-ceremony.js";
 
+import {
+  createJourneyEventStore
+} from "./journey-event-store.js";
+
+import {
+  recordJourneyEvent
+} from "./record-journey-event.js";
+
+import {
+  JourneyEventTypes
+} from "../events/journey-event-types.js";
+
 export function createQuestRuntime({
   store
 }) {
+  const eventStore =
+    createJourneyEventStore();
   function listQuests() {
     return store
       .read()
@@ -312,6 +326,29 @@ export function createQuestRuntime({
       nextState
     );
 
+    if (
+      user &&
+      ceremony
+    ) {
+      recordJourneyEvent({
+        store:
+          eventStore,
+
+        type:
+          JourneyEventTypes.QuestCompleted,
+
+        userId:
+          user.id,
+
+        payload: {
+          questId:
+            quest.id,
+
+          attemptId
+        }
+      });
+    }
+
     return {
       attempt:
         completed,
@@ -383,6 +420,10 @@ export function createQuestRuntime({
     addProof,
     submit,
     complete,
-    challenge
+    challenge,
+
+    listEvents() {
+      return eventStore.list();
+    }
   };
 }
