@@ -5,6 +5,10 @@ import {
 } from "./journey-view.js";
 
 import {
+  getHomeView
+} from "./home-view.js";
+
+import {
   resolve
 } from "node:path";
 
@@ -369,6 +373,43 @@ function getAttemptForQuest(
 app.get(
   "/",
   (_request, response) => {
+    const state =
+      getState();
+
+    const user =
+      (state.users ?? [])
+        .find(
+          (candidate) =>
+            candidate.handle ===
+            "z$"
+        );
+
+    const profile =
+      user
+        ? (
+            (state.experienceProfiles ?? [])
+              .find(
+                (candidate) =>
+                  candidate.userId ===
+                  user.id
+              )
+          )
+        : null;
+
+    const homeView =
+      user && profile
+        ? getHomeView({
+            user,
+            profile,
+            achievements:
+              state.achievements ?? [],
+            quests:
+              runtime.listQuests(),
+            attempts:
+              state.attempts
+          })
+        : null;
+
     const quests =
       runtime.listQuests();
 
@@ -450,6 +491,44 @@ app.get(
     Quest is a network built around
     action instead of passive feeds.
   </p>
+
+  ${
+    homeView &&
+    homeView.featuredQuest
+      ? `
+<section class="panel">
+  <p class="eyebrow">
+    Recommended next
+  </p>
+
+  <h2>
+    ${escapeHtml(
+      homeView.featuredQuest.title
+    )}
+  </h2>
+
+  <p>
+    Continue building your journey.
+  </p>
+
+  <div class="meta">
+    <span>
+      ${escapeHtml(
+        homeView.featuredQuest.category
+      )}
+    </span>
+
+    <span>
+      Difficulty
+      ${escapeHtml(
+        homeView.featuredQuest.difficulty
+      )}/10
+    </span>
+  </div>
+</section>
+`
+      : ""
+  }
 
   <div class="grid">
     ${cards}
