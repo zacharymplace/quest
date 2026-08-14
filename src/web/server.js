@@ -28,6 +28,10 @@ import {
   getHomeExperience
 } from "../services/get-home-experience.js";
 
+import {
+  registerJourneyApiRoute
+} from "./api/journey-route.js";
+
 const app =
   express();
 
@@ -1845,6 +1849,12 @@ app.post(
     );
   }
 );
+
+registerJourneyApiRoute({
+  app,
+
+  getState
+});
 
 app.listen(
   port,
