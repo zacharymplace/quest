@@ -10,10 +10,6 @@ import {
   getJourneyState
 } from "./get-journey-state.js";
 
-import {
-  getHomeView
-} from "../web/home-view.js";
-
 export function getHomeExperience({
   user,
   profile,
@@ -32,14 +28,15 @@ export function getHomeExperience({
       profile
     });
 
-  const home =
-    getHomeView({
-      user,
-      profile,
-      achievements,
-      quests,
-      attempts
-    });
+  const next =
+    quests.find(
+      (quest) =>
+        !attempts.some(
+          (attempt) =>
+            attempt.questId ===
+            quest.id
+        )
+    ) ?? null;
 
   const state =
     getJourneyState({
@@ -49,7 +46,7 @@ export function getHomeExperience({
         active,
 
       nextQuest:
-        home.nextQuest
+        next
     });
 
   return {
@@ -76,9 +73,16 @@ export function getHomeExperience({
           }
         : null,
 
-    next:
-      home.nextQuest,
+    next,
 
-    profile
+    profile,
+
+    completed:
+      profile.completedCount ??
+      history.totalCompleted,
+
+    displayName:
+      user.displayName ??
+      user.handle
   };
 }
