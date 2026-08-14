@@ -1647,14 +1647,19 @@ app.post(
     </p>
   </section>
 
-  <a
-    class="cta"
-    href="/quests/${encodeURIComponent(
+  <form
+    method="post"
+    action="/quests/${encodeURIComponent(
       view.questId
-    )}"
+    )}/accept"
   >
-    View first Quest
-  </a>
+    <button
+      type="submit"
+      class="cta"
+    >
+      Accept first Quest
+    </button>
+  </form>
 </section>
 `
       })
