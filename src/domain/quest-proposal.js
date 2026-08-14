@@ -30,7 +30,21 @@ export const QuestProposalSchema =
       z.string().min(1),
 
     progression:
-      z.string().min(1)
+      z.string().min(1),
+
+    skillsBuilt:
+      z.array(
+        z.string()
+      ).optional(),
+
+    estimatedMinutes:
+      z.number()
+        .positive()
+        .optional(),
+
+    difficultyChange:
+      z.number()
+        .optional()
   });
 
 export function createQuestProposal({

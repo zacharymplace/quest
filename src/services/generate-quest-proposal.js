@@ -10,6 +10,14 @@ import {
   questTemplates
 } from "../data/quest-templates.js";
 
+import {
+  questGraph
+} from "../data/quest-graph.js";
+
+import {
+  reasonAboutQuest
+} from "./reason-about-quest.js";
+
 export function generateQuestProposal({
   attempts,
   profile,
@@ -28,6 +36,27 @@ export function generateQuestProposal({
     const quest =
       chain[0];
 
+    const previousQuest =
+      questGraph.find(
+        (node) =>
+          attempts.some(
+            (attempt) =>
+              attempt.questId ===
+              node.id &&
+              attempt.status ===
+              "completed"
+          )
+      );
+
+    const reasoning =
+      quest.skillsBuilt &&
+      quest.estimatedMinutes
+        ? reasonAboutQuest({
+            quest,
+            previousQuest
+          })
+        : null;
+
     return createQuestProposal({
       quest,
 
@@ -35,10 +64,21 @@ export function generateQuestProposal({
         "chain",
 
       reason:
-        `Continue your ${quest.category} journey`,
+        reasoning
+          ? reasoning.reason
+          : `Continue your ${quest.category} journey`,
 
       progression:
-        "Next step in your current path"
+        "Next step in your current path",
+
+      skillsBuilt:
+        reasoning?.skillsBuilt,
+
+      estimatedMinutes:
+        reasoning?.estimatedMinutes,
+
+      difficultyChange:
+        reasoning?.difficultyChange
     });
   }
 
