@@ -48,11 +48,23 @@ export function generateQuestProposal({
           )
       );
 
+    const graphQuest =
+      questGraph.find(
+        (node) =>
+          node.id ===
+          quest.id
+      );
+
+    const reasoningQuest =
+      graphQuest ?? quest;
+
     const reasoning =
-      quest.skillsBuilt &&
-      quest.estimatedMinutes
+      reasoningQuest.skillsBuilt &&
+      reasoningQuest.estimatedMinutes
         ? reasonAboutQuest({
-            quest,
+            quest:
+              reasoningQuest,
+
             previousQuest
           })
         : null;

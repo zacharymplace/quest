@@ -61,7 +61,16 @@ export function getHomeView({
               feed.nextQuest.reason,
 
             progression:
-              feed.nextQuest.progression
+              feed.nextQuest.progression,
+
+            skillsBuilt:
+              feed.nextQuest.skillsBuilt ?? [],
+
+            estimatedMinutes:
+              feed.nextQuest.estimatedMinutes ?? null,
+
+            difficultyChange:
+              feed.nextQuest.difficultyChange ?? null
           }
         : null,
 

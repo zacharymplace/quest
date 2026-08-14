@@ -51,12 +51,18 @@ export function createQuestProposal({
   quest,
   source,
   reason,
-  progression
+  progression,
+  skillsBuilt,
+  estimatedMinutes,
+  difficultyChange
 }) {
   return QuestProposalSchema.parse({
     quest,
     source,
     reason,
-    progression
+    progression,
+    skillsBuilt,
+    estimatedMinutes,
+    difficultyChange
   });
 }
