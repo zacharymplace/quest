@@ -494,35 +494,44 @@ app.get(
 
   ${
     homeView &&
-    homeView.featuredQuest
+    homeView.nextQuest
       ? `
 <section class="panel">
   <p class="eyebrow">
-    Recommended next
+    Continue your journey
   </p>
 
   <h2>
     ${escapeHtml(
-      homeView.featuredQuest.title
+      homeView.nextQuest.title
     )}
   </h2>
 
   <p>
-    Continue building your journey.
+    Because:
+    ${escapeHtml(
+      homeView.nextQuest.reason
+    )}
+  </p>
+
+  <p>
+    ${escapeHtml(
+      homeView.nextQuest.progression
+    )}
   </p>
 
   <div class="meta">
     <span>
       ${escapeHtml(
-        homeView.featuredQuest.category
+        homeView.nextQuest.category
       )}
     </span>
 
     <span>
-      Difficulty
+      Source:
       ${escapeHtml(
-        homeView.featuredQuest.difficulty
-      )}/10
+        homeView.nextQuest.source
+      )}
     </span>
   </div>
 </section>
