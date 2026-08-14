@@ -6,7 +6,8 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "npm test"
+    "check": "npm test",
+    "demo": "node src/app/demo.js"
   },
   "keywords": [],
   "author": "",
