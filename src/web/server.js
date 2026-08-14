@@ -759,23 +759,82 @@ app.get(
       attempt.status ===
       "completed"
     ) {
+      const challengeCount =
+        state.challenges.filter(
+          (challenge) =>
+            challenge.questId ===
+            quest.id &&
+            challenge.challengerId ===
+            attempt.participantId
+        ).length;
+
       actions = `
 <section class="section">
+  <p class="eyebrow">
+    Completed
+  </p>
+
   <h2>
-    Quest complete
+    Pass it on.
   </h2>
 
   <p>
-    This attempt is now part of your
-    completed record.
+    You completed this Quest.
+    Challenge someone else to do it.
   </p>
 
-  <a
-    class="cta"
-    href="/"
+  <form
+    method="post"
+    action="/attempts/${encodeURIComponent(
+      attempt.id
+    )}/challenge"
   >
-    Find another Quest
-  </a>
+    <label for="recipient">
+      Who are you challenging?
+    </label>
+
+    <input
+      id="recipient"
+      name="recipient"
+      required
+      autocomplete="off"
+      placeholder="Friend name or handle"
+    >
+
+    <button type="submit">
+      Challenge them
+    </button>
+  </form>
+
+  ${
+    challengeCount > 0
+      ? `
+<p>
+  ${challengeCount}
+  challenge${challengeCount === 1 ? "" : "s"}
+  sent from this Quest.
+</p>
+`
+      : ""
+  }
+
+  <div class="stack">
+    <a
+      class="cta secondary"
+      href="/attempts/${encodeURIComponent(
+        attempt.id
+      )}/share"
+    >
+      View completion card
+    </a>
+
+    <a
+      class="cta secondary"
+      href="/"
+    >
+      Find another Quest
+    </a>
+  </div>
 </section>
 `;
     }
@@ -891,6 +950,283 @@ app.post(
       `/attempts/${encodeURIComponent(
         result.attempt.id
       )}`
+    );
+  }
+);
+
+
+app.post(
+  "/attempts/:attemptId/challenge",
+  (request, response) => {
+    const attempt =
+      getAttempt(
+        request.params.attemptId
+      );
+
+    if (!attempt) {
+      response
+        .status(404)
+        .send(
+          "Attempt not found"
+        );
+
+      return;
+    }
+
+    const recipient =
+      String(
+        request.body.recipient ?? ""
+      ).trim();
+
+    if (recipient === "") {
+      response
+        .status(400)
+        .send(
+          "Recipient is required"
+        );
+
+      return;
+    }
+
+    const challenge =
+      runtime.challenge({
+        attemptId:
+          attempt.id,
+        recipientId:
+          recipient
+      });
+
+    response.redirect(
+      `/challenges/${encodeURIComponent(
+        challenge.id
+      )}`
+    );
+  }
+);
+
+app.get(
+  "/challenges/:challengeId",
+  (request, response) => {
+    const state =
+      getState();
+
+    const challenge =
+      state.challenges.find(
+        (candidate) =>
+          candidate.id ===
+          request.params.challengeId
+      );
+
+    if (!challenge) {
+      response
+        .status(404)
+        .send(
+          page({
+            title:
+              "Challenge not found",
+            body: `
+<h1>
+  Challenge not found.
+</h1>
+`
+          })
+        );
+
+      return;
+    }
+
+    const quest =
+      runtime.getQuest(
+        challenge.questId
+      );
+
+    response.send(
+      page({
+        title:
+          `Challenge: ${quest.title}`,
+        body: `
+<article class="panel">
+  <p class="eyebrow">
+    You have been challenged
+  </p>
+
+  <h1>
+    ${escapeHtml(
+      quest.title
+    )}
+  </h1>
+
+  <p class="lede">
+    ${escapeHtml(
+      challenge.challengerId
+    )}
+    challenged
+    ${escapeHtml(
+      challenge.recipientId
+    )}
+    to complete this Quest.
+  </p>
+
+  <section class="section">
+    <h2>
+      The Quest
+    </h2>
+
+    <p>
+      ${escapeHtml(
+        quest.description
+      )}
+    </p>
+
+    <p>
+      Difficulty:
+      ${escapeHtml(
+        quest.difficulty
+      )}/10
+    </p>
+  </section>
+
+  <div class="stack">
+    <a
+      class="cta"
+      href="/quests/${encodeURIComponent(
+        quest.id
+      )}"
+    >
+      View Quest
+    </a>
+
+    <a
+      class="cta secondary"
+      href="/"
+    >
+      Explore Quest
+    </a>
+  </div>
+</article>
+`
+      })
+    );
+  }
+);
+
+app.get(
+  "/attempts/:attemptId/share",
+  (request, response) => {
+    const attempt =
+      getAttempt(
+        request.params.attemptId
+      );
+
+    if (
+      !attempt ||
+      attempt.status !==
+      "completed"
+    ) {
+      response
+        .status(404)
+        .send(
+          page({
+            title:
+              "Completion not found",
+            body: `
+<h1>
+  Completion not found.
+</h1>
+`
+          })
+        );
+
+      return;
+    }
+
+    const quest =
+      runtime.getQuest(
+        attempt.questId
+      );
+
+    const card =
+      {
+        participantName:
+          "Z$",
+        title:
+          quest.title,
+        category:
+          quest.category,
+        difficulty:
+          quest.difficulty
+      };
+
+    response.send(
+      page({
+        title:
+          `${quest.title} completed`,
+        body: `
+<section
+  class="panel"
+  style="
+    min-height: 560px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  "
+>
+  <div>
+    <p class="eyebrow">
+      Quest completed
+    </p>
+
+    <h1>
+      ${escapeHtml(
+        card.title
+      )}
+    </h1>
+  </div>
+
+  <div>
+    <p
+      style="
+        font-size: 28px;
+        margin-bottom: 12px;
+      "
+    >
+      ${escapeHtml(
+        card.participantName
+      )}
+      did it.
+    </p>
+
+    <div class="meta">
+      <span>
+        ${escapeHtml(
+          card.category
+        )}
+      </span>
+
+      <span>
+        Difficulty
+        ${escapeHtml(
+          card.difficulty
+        )}/10
+      </span>
+    </div>
+
+    <p class="lede">
+      Think you can complete it?
+    </p>
+
+    <a
+      class="cta"
+      href="/quests/${encodeURIComponent(
+        quest.id
+      )}"
+    >
+      Accept the Quest
+    </a>
+  </div>
+</section>
+`
+      })
     );
   }
 );

@@ -13,7 +13,10 @@ const EMPTY_STATE = {
   quests: [],
   attempts: [],
   proofs: [],
-  challenges: []
+  challenges: [],
+  users: [],
+  reputations: [],
+  achievements: []
 };
 
 function cloneEmptyState() {

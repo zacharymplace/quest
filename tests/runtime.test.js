@@ -205,3 +205,76 @@ describe(
     );
   }
 );
+
+test(
+  "completed attempt can challenge forward",
+  () => {
+    const {
+      store,
+      runtime
+    } =
+      createHarness();
+
+    const [quest] =
+      runtime.listQuests();
+
+    const attempt =
+      runtime.acceptQuest({
+        questId:
+          quest.id,
+        participantId:
+          "user_z"
+      });
+
+    runtime.addProof({
+      attemptId:
+        attempt.id,
+      type: "text",
+      value:
+        "Completed the challenge."
+    });
+
+    runtime.submit({
+      attemptId:
+        attempt.id
+    });
+
+    runtime.complete({
+      attemptId:
+        attempt.id,
+      participantName:
+        "Z$"
+    });
+
+    const challenge =
+      runtime.challenge({
+        attemptId:
+          attempt.id,
+        recipientId:
+          "friend_2"
+      });
+
+    expect(
+      challenge.questId
+    ).toBe(
+      quest.id
+    );
+
+    expect(
+      challenge.challengerId
+    ).toBe(
+      "user_z"
+    );
+
+    expect(
+      challenge.recipientId
+    ).toBe(
+      "friend_2"
+    );
+
+    expect(
+      store.read()
+        .challenges
+    ).toHaveLength(1);
+  }
+);
