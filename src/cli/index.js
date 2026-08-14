@@ -24,6 +24,10 @@ import {
   getJourneyHealth
 } from "../services/get-journey-health.js";
 
+import {
+  runJourneyAudit
+} from "../services/run-journey-audit.js";
+
 const store =
   createLocalStore({
     filePath:
@@ -89,6 +93,30 @@ function print(value) {
 }
 
 switch (command) {
+  case "verify": {
+    const state =
+      store.read();
+
+    print(
+      runJourneyAudit({
+        events:
+          eventStore.list(),
+
+        profile:
+          (
+            state.experienceProfiles ?? []
+          )
+            .find(
+              (candidate) =>
+                candidate.userId ===
+                "user_z"
+            ) ?? {}
+      })
+    );
+
+    break;
+  }
+
   case "health": {
     const state =
       store.read();
