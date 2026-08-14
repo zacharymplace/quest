@@ -1649,7 +1649,9 @@ app.post(
 
   <a
     class="cta"
-    href="/quests/music-foundation"
+    href="/quests/${encodeURIComponent(
+      view.questId
+    )}"
   >
     View first Quest
   </a>

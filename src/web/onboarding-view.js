@@ -19,6 +19,9 @@ export function getOnboardingView({
     goal:
       intent.goal,
 
+    questId:
+      result.proposal.quest.id,
+
     questTitle:
       result.proposal.quest.title,
 
