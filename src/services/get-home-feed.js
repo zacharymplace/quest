@@ -15,6 +15,10 @@ import {
 } from "./get-chain-recommendations.js";
 
 import {
+  enrichRecommendations
+} from "./enrich-recommendations.js";
+
+import {
   questTemplates
 } from "../data/quest-templates.js";
 
@@ -59,11 +63,25 @@ export function getHomeFeed({
 
   const recommended =
     chainRecommendations.length > 0
-      ? chainRecommendations
-      : recommendNextQuests({
-          availableQuests:
-            available,
-          profile
+      ? enrichRecommendations({
+          quests:
+            chainRecommendations,
+          source:
+            "chain",
+          reason:
+            "Continue your current journey"
+        })
+      : enrichRecommendations({
+          quests:
+            recommendNextQuests({
+              availableQuests:
+                available,
+              profile
+            }),
+          source:
+            "discovery",
+          reason:
+            "Explore a new experience"
         });
 
   return {

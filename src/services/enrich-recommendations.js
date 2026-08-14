@@ -5,6 +5,8 @@ export function enrichRecommendations({
 }) {
   return quests.map(
     (quest) => ({
+      ...quest,
+
       quest,
 
       source,
