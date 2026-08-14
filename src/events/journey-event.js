@@ -2,13 +2,21 @@ import {
   z
 } from "zod";
 
+import {
+  JourneyEventTypes
+} from "./journey-event-types.js";
+
 const JourneyEventSchema =
   z.object({
     id:
       z.string().min(1),
 
     type:
-      z.string().min(1),
+      z.enum(
+        Object.values(
+          JourneyEventTypes
+        )
+      ),
 
     userId:
       z.string().min(1),
