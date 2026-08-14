@@ -35,10 +35,6 @@ import {
 } from "./complete-quest-ceremony.js";
 
 import {
-  createJourneyEventStore
-} from "./journey-event-store.js";
-
-import {
   recordJourneyEvent
 } from "./record-journey-event.js";
 
@@ -47,10 +43,14 @@ import {
 } from "../events/journey-event-types.js";
 
 export function createQuestRuntime({
-  store
+  store,
+  eventStore
 }) {
-  const eventStore =
-    createJourneyEventStore();
+  if (!eventStore) {
+    throw new Error(
+      "quest runtime requires event store"
+    );
+  }
   function listQuests() {
     return store
       .read()

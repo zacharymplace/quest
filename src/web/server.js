@@ -13,6 +13,10 @@ import {
 } from "../storage/local-store.js";
 
 import {
+  createEventStore
+} from "../storage/event-store.js";
+
+import {
   createQuestRuntime
 } from "../services/quest-runtime.js";
 
@@ -63,9 +67,20 @@ seedIdentity({
   store
 });
 
+const eventStore =
+  createEventStore({
+    filePath:
+      resolve(
+        "data",
+        "events.json"
+      )
+  });
+
 const runtime =
   createQuestRuntime({
-    store
+    store,
+
+    eventStore
   });
 
 function escapeHtml(

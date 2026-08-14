@@ -23,6 +23,10 @@ import {
 } from "../src/storage/local-store.js";
 
 import {
+  createEventStore
+} from "../src/storage/event-store.js";
+
+import {
   createQuestRuntime
 } from "../src/services/quest-runtime.js";
 
@@ -58,9 +62,20 @@ function createHarness() {
     store
   });
 
+  const eventStore =
+    createEventStore({
+      filePath:
+        join(
+          directory,
+          "events.json"
+        )
+    });
+
   const runtime =
     createQuestRuntime({
-      store
+      store,
+
+      eventStore
     });
 
   return {
