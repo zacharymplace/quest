@@ -5,18 +5,6 @@ import {
 } from "./journey-view.js";
 
 import {
-  getHomeView
-} from "./home-view.js";
-
-import {
-  getJourneyDashboardView
-} from "./journey-dashboard-view.js";
-
-import {
-  getJourneyHistoryView
-} from "./journey-history-view.js";
-
-import {
   resolve
 } from "node:path";
 
@@ -37,16 +25,8 @@ import {
 } from "../services/seed-identity.js";
 
 import {
-  getActiveJourney
-} from "../services/get-active-journey.js";
-
-import {
-  getJourneyHistory
-} from "../services/get-journey-history.js";
-
-import {
-  getJourneyState
-} from "../services/get-journey-state.js";
+  getHomeExperience
+} from "../services/get-home-experience.js";
 
 const app =
   express();
@@ -416,55 +396,70 @@ app.get(
           )
         : null;
 
-    const homeView =
+    const experience =
       user && profile
-        ? getHomeView({
+        ? getHomeExperience({
             user,
+
             profile,
+
             achievements:
               state.achievements ?? [],
+
             quests:
               runtime.listQuests(),
+
             attempts:
-              state.attempts
+              state.attempts ?? []
           })
         : null;
 
-    const journeyDashboard =
-      user && profile
-        ? getJourneyDashboardView({
-            journey:
-              getActiveJourney({
-                attempts:
-                  state.attempts ?? [],
+    const homeView =
+      experience;
 
-                profile
-              })
-          })
+    const journeyDashboard =
+      experience?.current
+        ? {
+            questTitle:
+              experience.current.title,
+
+            status:
+              experience.current.status,
+
+            builds:
+              experience.current.builds,
+
+            nextStep:
+              experience.current.nextStep,
+
+            completed:
+              experience.profile
+                .completedCount
+          }
         : null;
 
     const journeyHistory =
-      user
-        ? getJourneyHistoryView({
-            history:
-              getJourneyHistory({
-                attempts:
-                  state.attempts ?? []
-              })
-          })
+      experience?.history
+        ? {
+            completed:
+              experience.history.completed,
+
+            totalCompleted:
+              experience.history.totalCompleted
+          }
         : null;
 
     const journeyState =
-      getJourneyState({
-        history:
-          journeyHistory,
+      experience
+        ? {
+            state:
+              experience.state,
 
-        activeJourney:
-          journeyDashboard,
-
-        nextQuest:
-          homeView?.nextQuest
-      });
+            nextAction:
+              experience.next?.reason ??
+              null
+          }
+        : null;
 
     const quests =
       runtime.listQuests();
