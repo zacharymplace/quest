@@ -25,8 +25,8 @@ import {
 } from "../services/get-journey-health.js";
 
 import {
-  runJourneyAudit
-} from "../services/run-journey-audit.js";
+  runJourneyIntegrityCheck
+} from "../services/run-journey-integrity-check.js";
 
 const store =
   createLocalStore({
@@ -98,7 +98,7 @@ switch (command) {
       store.read();
 
     print(
-      runJourneyAudit({
+      runJourneyIntegrityCheck({
         events:
           eventStore.list(),
 
