@@ -19,6 +19,10 @@ import {
 } from "./enrich-recommendations.js";
 
 import {
+  generateQuestProposal
+} from "./generate-quest-proposal.js";
+
+import {
   questTemplates
 } from "../data/quest-templates.js";
 
@@ -84,9 +88,19 @@ export function getHomeFeed({
             "Explore a new experience"
         });
 
+  const nextQuest =
+    generateQuestProposal({
+      attempts,
+      profile,
+      availableQuests:
+        available
+    });
+
   return {
     greeting:
       `Welcome back, ${user.displayName}`,
+
+    nextQuest,
 
     journey: {
       completed:

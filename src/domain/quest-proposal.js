@@ -16,6 +16,7 @@ export const QuestProposalSchema =
 
       difficulty:
         z.number()
+          .optional()
     }),
 
     source:
