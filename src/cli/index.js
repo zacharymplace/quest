@@ -20,6 +20,10 @@ import {
   seedStore
 } from "../services/seed-store.js";
 
+import {
+  getJourneyHealth
+} from "../services/get-journey-health.js";
+
 const store =
   createLocalStore({
     filePath:
@@ -47,6 +51,23 @@ const runtime =
     store,
 
     eventStore
+  });
+
+const health =
+  getJourneyHealth({
+    events:
+      eventStore.list(),
+
+    profile:
+      (
+        store.read()
+          .experienceProfiles ?? []
+      )
+        .find(
+          (candidate) =>
+            candidate.handle === "z$" ||
+            candidate.userId === "user_z"
+        ) ?? {}
   });
 
 const [
@@ -85,6 +106,12 @@ function print(value) {
 }
 
 switch (command) {
+  case "health":
+    print(
+      health
+    );
+    break;
+
   case "quests":
     print(
       runtime.listQuests()
