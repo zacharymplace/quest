@@ -520,6 +520,56 @@ app.get(
     )}
   </p>
 
+  ${
+    homeView.nextQuest.skillsBuilt &&
+    homeView.nextQuest.skillsBuilt.length > 0
+      ? `
+<p>
+  Builds:
+  ${homeView.nextQuest.skillsBuilt
+    .map(
+      (skill) =>
+        escapeHtml(skill)
+    )
+    .join(" · ")}
+</p>
+`
+      : ""
+  }
+
+  ${
+    homeView.nextQuest.estimatedMinutes
+      ? `
+<p>
+  Time:
+  ${escapeHtml(
+    homeView.nextQuest.estimatedMinutes
+  )} minutes
+</p>
+`
+      : ""
+  }
+
+  ${
+    homeView.nextQuest.difficultyChange !==
+    null &&
+    homeView.nextQuest.difficultyChange !==
+    undefined
+      ? `
+<p>
+  Difficulty:
+  ${
+    homeView.nextQuest.difficultyChange > 0
+      ? "+"
+      : ""
+  }${escapeHtml(
+    homeView.nextQuest.difficultyChange
+  )}
+</p>
+`
+      : ""
+  }
+
   <div class="meta">
     <span>
       ${escapeHtml(
