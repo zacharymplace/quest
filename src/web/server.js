@@ -9,6 +9,10 @@ import {
 } from "./home-view.js";
 
 import {
+  getJourneyDashboardView
+} from "./journey-dashboard-view.js";
+
+import {
   resolve
 } from "node:path";
 
@@ -27,6 +31,10 @@ import {
 import {
   seedIdentity
 } from "../services/seed-identity.js";
+
+import {
+  getActiveJourney
+} from "../services/get-active-journey.js";
 
 const app =
   express();
@@ -410,6 +418,19 @@ app.get(
           })
         : null;
 
+    const journeyDashboard =
+      user && profile
+        ? getJourneyDashboardView({
+            journey:
+              getActiveJourney({
+                attempts:
+                  state.attempts ?? [],
+
+                profile
+              })
+          })
+        : null;
+
     const quests =
       runtime.listQuests();
 
@@ -491,6 +512,68 @@ app.get(
     Quest is a network built around
     action instead of passive feeds.
   </p>
+
+  ${
+    journeyDashboard
+      ? `
+<section class="panel">
+  <p class="eyebrow">
+    Current journey
+  </p>
+
+  <h2>
+    ${escapeHtml(
+      journeyDashboard.questTitle
+    )}
+  </h2>
+
+  <p>
+    Status:
+    ${escapeHtml(
+      journeyDashboard.status
+    )}
+  </p>
+
+  ${
+    journeyDashboard.builds.length > 0
+      ? `
+<p>
+  Builds:
+  ${journeyDashboard.builds
+    .map(
+      (skill) =>
+        escapeHtml(skill)
+    )
+    .join(" · ")}
+</p>
+`
+      : ""
+  }
+
+  ${
+    journeyDashboard.nextStep
+      ? `
+<p>
+  Next milestone:
+  ${escapeHtml(
+    journeyDashboard.nextStep
+  )}
+</p>
+`
+      : ""
+  }
+
+  <p>
+    Completed:
+    ${escapeHtml(
+      journeyDashboard.completed
+    )}
+    Quests
+  </p>
+</section>
+`
+      : ""
+  }
 
   ${
     homeView &&
