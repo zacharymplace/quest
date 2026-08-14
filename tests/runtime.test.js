@@ -278,3 +278,106 @@ test(
     ).toHaveLength(1);
   }
 );
+
+test(
+  "completion persists experience identity",
+  () => {
+    const {
+      store,
+      runtime
+    } =
+      createHarness();
+
+    const state =
+      store.read();
+
+    const user = {
+      id:
+        "user_identity_test",
+      handle:
+        "z$",
+      displayName:
+        "Z$",
+      createdAt:
+        new Date().toISOString()
+    };
+
+    store.write({
+      ...state,
+
+      users: [
+        user
+      ],
+
+      reputations: [],
+
+      experienceProfiles: [],
+
+      achievements: []
+    });
+
+    const [quest] =
+      runtime.listQuests();
+
+    const attempt =
+      runtime.acceptQuest({
+        questId:
+          quest.id,
+        participantId:
+          "user_z"
+      });
+
+    runtime.addProof({
+      attemptId:
+        attempt.id,
+      type:
+        "text",
+      value:
+        "Completed it."
+    });
+
+    runtime.submit({
+      attemptId:
+        attempt.id
+    });
+
+    const result =
+      runtime.complete({
+        attemptId:
+          attempt.id,
+        participantName:
+          "Z$"
+      });
+
+    expect(
+      result.ceremony
+    ).not.toBeNull();
+
+    const persisted =
+      store.read();
+
+    expect(
+      persisted.experienceProfiles
+    ).toHaveLength(1);
+
+    expect(
+      persisted.experienceProfiles[0]
+        .completedCount
+    ).toBe(1);
+
+    expect(
+      persisted.experienceProfiles[0]
+        .disciplines[
+          quest.category
+        ]
+    ).toBe(1);
+
+    expect(
+      persisted.achievements
+    ).toHaveLength(1);
+
+    expect(
+      persisted.reputations
+    ).toHaveLength(1);
+  }
+);

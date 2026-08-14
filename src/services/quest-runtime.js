@@ -22,6 +22,18 @@ import {
   createCompletionCard
 } from "./create-completion-card.js";
 
+import {
+  createExperienceProfile
+} from "../domain/experience-profile.js";
+
+import {
+  createReputation
+} from "../domain/reputation.js";
+
+import {
+  completeQuestCeremony
+} from "./complete-quest-ceremony.js";
+
 export function createQuestRuntime({
   store
 }) {
@@ -207,6 +219,53 @@ export function createQuestRuntime({
         quest
       });
 
+    const user =
+      (state.users ?? []).find(
+        (candidate) =>
+          candidate.handle === "z$"
+      ) ?? null;
+
+    const reputation =
+      user
+        ? (
+            (state.reputations ?? []).find(
+              (candidate) =>
+                candidate.userId ===
+                user.id
+            ) ??
+            createReputation({
+              userId:
+                user.id
+            })
+          )
+        : null;
+
+    const profile =
+      user
+        ? (
+            (state.experienceProfiles ?? [])
+              .find(
+                (candidate) =>
+                  candidate.userId ===
+                  user.id
+              ) ??
+            createExperienceProfile({
+              userId:
+                user.id
+            })
+          )
+        : null;
+
+    const ceremony =
+      user
+        ? completeQuestCeremony({
+            user,
+            quest,
+            reputation,
+            profile
+          })
+        : null;
+
     const attempts = [
       ...state.attempts
     ];
@@ -214,19 +273,57 @@ export function createQuestRuntime({
     attempts[index] =
       completed;
 
-    store.write({
+    const nextState = {
       ...state,
       attempts
-    });
+    };
+
+    if (
+      user &&
+      ceremony
+    ) {
+      nextState.reputations = [
+        ...(state.reputations ?? [])
+          .filter(
+            (candidate) =>
+              candidate.userId !==
+              user.id
+          ),
+        ceremony.reputation
+      ];
+
+      nextState.experienceProfiles = [
+        ...(state.experienceProfiles ?? [])
+          .filter(
+            (candidate) =>
+              candidate.userId !==
+              user.id
+          ),
+        ceremony.profile
+      ];
+
+      nextState.achievements = [
+        ...(state.achievements ?? []),
+        ceremony.achievement
+      ];
+    }
+
+    store.write(
+      nextState
+    );
 
     return {
-      attempt: completed,
+      attempt:
+        completed,
+
       card:
         createCompletionCard({
           quest,
           attempt: completed,
           participantName
-        })
+        }),
+
+      ceremony
     };
   }
 

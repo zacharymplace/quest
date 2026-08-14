@@ -16,7 +16,8 @@ const EMPTY_STATE = {
   challenges: [],
   users: [],
   reputations: [],
-  achievements: []
+  achievements: [],
+  experienceProfiles: []
 };
 
 function cloneEmptyState() {

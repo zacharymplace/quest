@@ -2,6 +2,10 @@ import {
   createSeedUsers
 } from "../data/seed-users.js";
 
+import {
+  createExperienceProfile
+} from "../domain/experience-profile.js";
+
 export function seedIdentity({
   store
 }) {
@@ -21,6 +25,16 @@ export function seedIdentity({
   return store.write({
     ...state,
     ...identity,
+
+    experienceProfiles:
+      identity.users.map(
+        (user) =>
+          createExperienceProfile({
+            userId:
+              user.id
+          })
+      ),
+
     achievements: []
   });
 }
