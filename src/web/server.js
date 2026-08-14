@@ -1432,6 +1432,234 @@ app.get(
   }
 );
 
+
+app.get(
+  "/onboarding",
+  (_request, response) => {
+    response.send(
+      page({
+        title:
+          "Start your journey",
+        body: `
+<section class="panel">
+  <p class="eyebrow">
+    Start your journey
+  </p>
+
+  <h1>
+    Who do you want to become?
+  </h1>
+
+  <p class="lede">
+    Choose a direction and Quest will
+    give you a concrete first step.
+  </p>
+
+  <form
+    method="post"
+    action="/onboarding"
+  >
+    <label for="goal">
+      Your goal
+    </label>
+
+    <input
+      id="goal"
+      name="goal"
+      required
+      placeholder="Become a better musician"
+    >
+
+    <label for="domain">
+      Domain
+    </label>
+
+    <select
+      id="domain"
+      name="domain"
+      required
+    >
+      <option value="music">
+        Music
+      </option>
+
+      <option value="cooking">
+        Cooking
+      </option>
+    </select>
+
+    <label for="experienceLevel">
+      Experience level
+    </label>
+
+    <select
+      id="experienceLevel"
+      name="experienceLevel"
+      required
+    >
+      <option value="beginner">
+        Beginner
+      </option>
+
+      <option value="intermediate">
+        Intermediate
+      </option>
+
+      <option value="advanced">
+        Advanced
+      </option>
+    </select>
+
+    <label for="minutesPerDay">
+      Minutes available per day
+    </label>
+
+    <input
+      id="minutesPerDay"
+      name="minutesPerDay"
+      type="number"
+      min="1"
+      value="30"
+      required
+    >
+
+    <button type="submit">
+      Create my first Quest
+    </button>
+  </form>
+</section>
+`
+      })
+    );
+  }
+);
+
+app.post(
+  "/onboarding",
+  (request, response) => {
+    const state =
+      getState();
+
+    const user =
+      (state.users ?? [])
+        .find(
+          (candidate) =>
+            candidate.handle ===
+            "z$"
+        );
+
+    if (!user) {
+      response
+        .status(500)
+        .send(
+          "User identity not initialized"
+        );
+
+      return;
+    }
+
+    const intent = {
+      domain:
+        String(
+          request.body.domain ?? ""
+        ),
+
+      goal:
+        String(
+          request.body.goal ?? ""
+        ).trim(),
+
+      experienceLevel:
+        String(
+          request.body.experienceLevel ??
+          "beginner"
+        ),
+
+      minutesPerDay:
+        Number(
+          request.body.minutesPerDay
+        )
+    };
+
+    const view =
+      getOnboardingView({
+        userId:
+          user.id,
+        intent
+      });
+
+    response.send(
+      page({
+        title:
+          view.headline,
+        body: `
+<section class="panel">
+  <p class="eyebrow">
+    Your first Quest
+  </p>
+
+  <h1>
+    ${escapeHtml(
+      view.questTitle
+    )}
+  </h1>
+
+  <p class="lede">
+    Goal:
+    ${escapeHtml(
+      view.goal
+    )}
+  </p>
+
+  <section class="section">
+    <h2>
+      Why this Quest
+    </h2>
+
+    <p>
+      ${escapeHtml(
+        view.reason
+      )}
+    </p>
+
+    ${
+      view.skillsBuilt.length > 0
+        ? `
+<p>
+  Builds:
+  ${view.skillsBuilt
+    .map(
+      (skill) =>
+        escapeHtml(skill)
+    )
+    .join(" · ")}
+</p>
+`
+        : ""
+    }
+
+    <p>
+      Estimated time:
+      ${escapeHtml(
+        view.estimatedMinutes
+      )}
+      minutes
+    </p>
+  </section>
+
+  <a
+    class="cta"
+    href="/quests/music-foundation"
+  >
+    View first Quest
+  </a>
+</section>
+`
+      })
+    );
+  }
+);
+
 app.listen(
   port,
   () => {
