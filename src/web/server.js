@@ -44,6 +44,10 @@ import {
   getJourneyHistory
 } from "../services/get-journey-history.js";
 
+import {
+  getJourneyState
+} from "../services/get-journey-state.js";
+
 const app =
   express();
 
@@ -450,6 +454,18 @@ app.get(
           })
         : null;
 
+    const journeyState =
+      getJourneyState({
+        history:
+          journeyHistory,
+
+        activeJourney:
+          journeyDashboard,
+
+        nextQuest:
+          homeView?.nextQuest
+      });
+
     const quests =
       runtime.listQuests();
 
@@ -531,6 +547,34 @@ app.get(
     Quest is a network built around
     action instead of passive feeds.
   </p>
+
+  ${
+    journeyState
+      ? `
+<section class="panel">
+  <p class="eyebrow">
+    Journey state
+  </p>
+
+  <h2>
+    ${
+      journeyState.state === "new"
+        ? "Start your first journey"
+        : journeyState.state === "active"
+          ? "Keep building your path"
+          : "Choose your next challenge"
+    }
+  </h2>
+
+  <p>
+    ${escapeHtml(
+      journeyState.nextAction
+    )}
+  </p>
+</section>
+`
+      : ""
+  }
 
   ${
     journeyHistory &&
