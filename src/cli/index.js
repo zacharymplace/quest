@@ -53,23 +53,6 @@ const runtime =
     eventStore
   });
 
-const health =
-  getJourneyHealth({
-    events:
-      eventStore.list(),
-
-    profile:
-      (
-        store.read()
-          .experienceProfiles ?? []
-      )
-        .find(
-          (candidate) =>
-            candidate.handle === "z$" ||
-            candidate.userId === "user_z"
-        ) ?? {}
-  });
-
 const [
   command,
   ...args
@@ -106,11 +89,32 @@ function print(value) {
 }
 
 switch (command) {
-  case "health":
+  case "health": {
+    const state =
+      store.read();
+
+    const health =
+      getJourneyHealth({
+        events:
+          eventStore.list(),
+
+        profile:
+          (
+            state.experienceProfiles ?? []
+          )
+            .find(
+              (candidate) =>
+                candidate.userId ===
+                "user_z"
+            ) ?? {}
+      });
+
     print(
       health
     );
+
     break;
+  }
 
   case "quests":
     print(
