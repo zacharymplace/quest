@@ -1,6 +1,10 @@
 import express from "express";
 
 import {
+  getCompletionJourneyView
+} from "./journey-view.js";
+
+import {
   resolve
 } from "node:path";
 
@@ -15,6 +19,10 @@ import {
 import {
   seedStore
 } from "../services/seed-store.js";
+
+import {
+  seedIdentity
+} from "../services/seed-identity.js";
 
 const app =
   express();
@@ -40,6 +48,10 @@ const store =
   });
 
 seedStore({
+  store
+});
+
+seedIdentity({
   store
 });
 
@@ -1157,6 +1169,55 @@ app.get(
           quest.difficulty
       };
 
+    const journey =
+      getCompletionJourneyView({
+        state:
+          store.read(),
+        userId:
+          "user_z"
+      });
+
+    const journeyMarkup =
+      journey
+        ? `
+<div class="section">
+  <h2>
+    Your journey expanded
+  </h2>
+
+  <p>
+    Total experiences:
+    ${escapeHtml(
+      journey.completed
+    )}
+  </p>
+
+  <p>
+    ${
+      journey.disciplines
+        .map(
+          (discipline) =>
+            `${escapeHtml(
+              discipline.name
+            )}: ${escapeHtml(
+              discipline.count
+            )}`
+        )
+        .join(" · ")
+    }
+  </p>
+
+  <p>
+    Latest milestone:
+    ${escapeHtml(
+      journey.latestMilestone ??
+      "New experience"
+    )}
+  </p>
+</div>
+`
+        : "";
+
     response.send(
       page({
         title:
@@ -1210,6 +1271,8 @@ app.get(
         )}/10
       </span>
     </div>
+
+    ${journeyMarkup}
 
     <p class="lede">
       Think you can complete it?
