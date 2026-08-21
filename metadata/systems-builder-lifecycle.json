@@ -1,0 +1,68 @@
+{
+  "schema_version": "systems-builder-lifecycle-v1",
+  "system_id": "quest",
+  "display_name": "Quest",
+  "phase": "operate",
+  "condition": "held",
+  "source": {
+    "repository": "zacharymplace/quest",
+    "path": ".",
+    "branch": "main",
+    "commit": "cd5b338"
+  },
+  "evidence": [
+    {
+      "kind": "validation",
+      "reference": "npm run check",
+      "result": "pass"
+    },
+    {
+      "kind": "test-suite",
+      "reference": "54 test files / 73 tests",
+      "result": "pass"
+    },
+    {
+      "kind": "demonstration",
+      "reference": "npm run demo",
+      "result": "pass"
+    },
+    {
+      "kind": "product-model",
+      "reference": "docs/PRODUCT.md",
+      "result": "pass"
+    },
+    {
+      "kind": "scope",
+      "reference": "README.md",
+      "result": "pass"
+    }
+  ],
+  "last_verified_at": "2026-08-21T19:17:06Z",
+  "next_action": {
+    "description": "Hold Quest as the validated real-world challenge and journey platform. Resume development only when a concrete new quest-network, progression, recommendation, proof, social, integrity, deployment, or product requirement is explicitly adopted.",
+    "command": "npm run check"
+  },
+  "blockers": [
+    "No current bounded implementation objective remains open.",
+    "The current challenge, proof, completion, progression, replay, and integrity loops are implemented and validated.",
+    "Future expansion should follow an explicit product requirement rather than speculative feature growth."
+  ],
+  "capabilities": [
+    "quest-creation",
+    "quest-acceptance",
+    "attempt-lifecycle",
+    "proof-submission",
+    "completion-verification",
+    "challenge-loop",
+    "reputation-and-progression",
+    "quest-recommendations",
+    "journey-state",
+    "journey-history",
+    "journey-event-stream",
+    "journey-replay",
+    "journey-audit",
+    "journey-integrity-verification",
+    "completion-cards",
+    "web-and-cli-surfaces"
+  ]
+}
